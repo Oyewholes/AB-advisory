@@ -123,11 +123,71 @@
   <!-- Contact -->
   <section id="contact" style="max-width:1200px; margin:0 auto; padding:50px 16px;">
     <h2 style="text-align:center; font-size:30px; color:var(--purple-900); margin:0 0 20px;">Contact Us</h2>
+    
     <div style="max-width:760px; margin:0 auto; text-align:center; line-height:1.8;">
       <p style="margin:6px 0;"><strong>Email:</strong> info@abadvisory.com</p>
       <p style="margin:6px 0;"><strong>Phone:</strong> +234 800 123 4567</p>
       <p style="margin:6px 0;"><strong>Address:</strong> Lagos, Nigeria</p>
     </div>
+    <form id="contactForm" style="max-width:760px; margin:20px auto; background:#fff; padding:18px; border-radius:10px; box-shadow:0 8px 20px rgba(0,0,0,.06);">
+  <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <input name="name" placeholder="Full name" required
+           style="flex:1; min-width:220px; padding:12px; border:1px solid #e5e7eb; border-radius:8px;">
+    <input name="email" type="email" placeholder="Email address" required
+           style="flex:1; min-width:220px; padding:12px; border:1px solid #e5e7eb; border-radius:8px;">
+  </div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+    <input name="phone" placeholder="Phone (WhatsApp preferred)" required
+           style="flex:1; min-width:220px; padding:12px; border:1px solid #e5e7eb; border-radius:8px;">
+    <select name="service" required
+            style="flex:1; min-width:220px; padding:12px; border:1px solid #e5e7eb; border-radius:8px;">
+      <option value="">Choose a service</option>
+      <option>School Applications</option>
+      <option>Visa Counselling</option>
+      <option>Travel Consulting</option>
+    </select>
+  </div>
+  <textarea name="message" rows="4" placeholder="Tell us briefly about your goal…"
+            style="width:100%; margin-top:12px; padding:12px; border:1px solid #e5e7eb; border-radius:8px;"></textarea>
+  <button type="submit"
+          style="margin-top:12px; background:var(--purple-700); color:#fff; padding:12px 18px; border:none; border-radius:8px; cursor:pointer; font-weight:700;">
+    Send enquiry
+  </button>
+  <div id="contactStatus" style="margin-top:10px; font-size:14px;"></div>
+</form>
+
+<script>
+  const form = document.getElementById('contactForm');
+  const statusEl = document.getElementById('contactStatus');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = 'Sending…';
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    try {
+      const res = await fetch('http://localhost:8080/api/contact', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        form.reset();
+        statusEl.style.color = 'green';
+        statusEl.textContent = 'Thanks! We will contact you shortly.';
+      } else {
+        const body = await res.json().catch(()=>({}));
+        statusEl.style.color = 'crimson';
+        statusEl.textContent = body?.message || 'Submission failed. Please check your inputs.';
+      }
+    } catch (err) {
+      statusEl.style.color = 'crimson';
+      statusEl.textContent = 'Network error. Is the backend running?';
+    }
+  });
+</script>
   </section>
 
   <!-- Footer -->
