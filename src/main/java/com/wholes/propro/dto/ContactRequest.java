@@ -1,4 +1,4 @@
-package com.wholes.dto;
+package com.wholes.propro.dto;
 
 
 import jakarta.validation.constraints.Email;
